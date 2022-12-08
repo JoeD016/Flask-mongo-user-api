@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, jsonify, request
-from flaskr.db import getUsers, get_user_by_name, add_user, get_user, delete_user, update_user
+from flaskr.db import getUsers, get_users_by_name, add_user, get_user, delete_user, update_user, get_user_by_email
 from dotenv import load_dotenv
 
 
@@ -27,10 +27,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
 
     @app.route('/', methods=['GET'])
     def api_get_users():
@@ -42,12 +38,26 @@ def create_app(test_config=None):
             "names": names
         }
     
-    @app.route('/user/<name>', methods=['GET'])
-    def api_get_user_by_name(name):
-        user = get_user_by_name(name)
-        return jsonify({
-            "name": name,
+    @app.route('/user/search/<name>', methods=['GET'])
+    def api_get_users_by_name(name):
+        cursor = get_users_by_name(name)
+        users = []
+        for user in cursor:
+            print(user['name'])
+            users.append({
+            "name": user['name'],
             "email": user['email'],
+            "password": user['password']
+        })
+        print(users)
+        return jsonify(users)
+    
+    @app.route('/user/<email>', methods=['GET'])
+    def api_get_user_by_name(email):
+        user = get_user_by_email(email)
+        return jsonify({
+            "name": user['name'],
+            "email": email,
             "password": user['password']
         })
 
@@ -101,4 +111,5 @@ def create_app(test_config=None):
                 }), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 400
+        
     return app

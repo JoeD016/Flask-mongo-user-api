@@ -25,7 +25,7 @@ db = LocalProxy(get_db)
 
 def getUsers():
     """
-    Return the total number of user and all user names.
+    Return an overview of users.
     """
     userNames = []
     cursor = db.users.find({})
@@ -33,24 +33,41 @@ def getUsers():
         userNames.append(user['name'])
     return userNames
 
-def get_user_by_name(name):
+def get_users_by_name(name):
     """
-    Given a user name, return a user profile data with that name.
+    Given a user name, return a list of user profile data with that name.
+    """
+    try:
+        cursor = db.users.find({"name": name})
+        return cursor
+    # TODO: Error Handling
+    # If an invalid user name is passed to `get_usesr_by_name`, it should return None.
+    except (StopIteration) as _:
+
+        return None
+
+    except Exception as e:
+        return {}
+
+def get_user_by_email(email):
+    """
+    Given a user email, return a user profile associated with that email.
     """
     try:
 
         pipeline = [
             {
                 "$match": {
-                    "name": name
+                    "email": email
                 }
             }
         ]
 
         user = db.users.aggregate(pipeline).next()
         return user
+
     # TODO: Error Handling
-    # If an invalid user name is passed to `get_user_by_name`, it should return None.
+    # If an invalid ID is passed to `get_user`, it should return None.
     except (StopIteration) as _:
 
         return None
