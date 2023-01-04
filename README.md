@@ -18,7 +18,7 @@ to enter the venv.
 install all dependencies by run:
 
 ```
-python3 -m pip install -r requirments.txt
+python3 -m pip install -r requirements.txt
 ```
 
 This project also depend on a mongodb server, set up a free tier cluster and add the uri into `.env`
