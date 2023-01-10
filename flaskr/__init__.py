@@ -43,13 +43,11 @@ def create_app(test_config=None):
         cursor = get_users_by_name(name)
         users = []
         for user in cursor:
-            print(user['name'])
             users.append({
             "name": user['name'],
             "email": user['email'],
             "password": user['password']
         })
-        print(users)
         return jsonify(users)
     
     @app.route('/user/<email>', methods=['GET'])
